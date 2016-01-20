@@ -9,7 +9,6 @@ public class FollowTheTarget : MonoBehaviour {
     [SerializeField] private float camDistance = 42f;
     [SerializeField] private float camUp = 10f;
     [SerializeField] private float smoothy1 = 1.2f;
-//  [SerializeField] private float smoothy2 = 5f;
     [SerializeField] private Transform foollow;
 
     private Vector3 targetPosition;
@@ -30,16 +29,8 @@ public class FollowTheTarget : MonoBehaviour {
         // for vertical and horizontal.
 
         //getting in position
-        /*  classic  */
         targetPosition = foollow.position + foollow.up * camUp - foollow.forward * camDistance;
         transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * smoothy1);
-        
-        /*  2.0  // too much jittering cause of the vertex positions
-        targetPosition = foollow.position + foollow.up * camUp;
-        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * smoothy1);
-        targetPosition = foollow.position - foollow.forward * camDistance;
-        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * smoothy2);
-        */
 
         //adjust rotation
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(foollow.position - transform.position, foollow.up), 0.15f);

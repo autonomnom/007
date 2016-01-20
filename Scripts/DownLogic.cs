@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 	
-[RequireComponent(typeof(CheckMeshesAndFindTheNearest))]
+[RequireComponent(typeof(Xray))]
 [RequireComponent(typeof(Rigidbody))]
 
 public class DownLogic : MonoBehaviour {
@@ -11,14 +11,14 @@ public class DownLogic : MonoBehaviour {
     private Vector3 chooseGoose;
 
     //script for finding the right normal
-    CheckMeshesAndFindTheNearest chekMesh;
+    Xray rray;
 
     public float gravity = -250f;
     Rigidbody body;
 
     void Awake() {
 
-        chekMesh = GetComponent<CheckMeshesAndFindTheNearest>();
+        rray = GetComponent<Xray>();
 
         body = GetComponent<Rigidbody>();
         body.constraints = RigidbodyConstraints.FreezeRotation;
@@ -36,7 +36,7 @@ public class DownLogic : MonoBehaviour {
     void FixedUpdate() {
 
         //applying rotation based on the triangles normal below
-        chooseGooseNorm = chekMesh.theNorm;
+        chooseGooseNorm = rray.theNorm;
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.FromToRotation(transform.up, chooseGooseNorm) * transform.rotation, .5f);
         body.AddForce(chooseGooseNorm * gravity);
     }

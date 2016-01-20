@@ -4,7 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(CheckMeshesAndFindTheNearest))]
 [RequireComponent(typeof(Rigidbody))]
 
-public class DownLogic : MonoBehaviour {
+public class DownLogicOLD : MonoBehaviour {
 
     private Vector3 chooseGooseNorm;
     private Vector3 chooseGoosePoint;

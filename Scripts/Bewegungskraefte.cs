@@ -13,7 +13,7 @@ public class Bewegungskraefte : MonoBehaviour {
     Vector3 smoothMoveVelocity;
     Quaternion rotationAmount;
 
-    private bool grounded;
+    [HideInInspector] public bool grounded;
     public LayerMask groundMask;
 
     Rigidbody body;
