@@ -4,6 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Bewegungskraefte))]
 
+// for casting rays, groundcontrol and while in air
 public class Xray : MonoBehaviour {
 
     Rigidbody body;

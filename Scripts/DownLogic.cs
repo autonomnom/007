@@ -4,6 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(Xray))]
 [RequireComponent(typeof(Rigidbody))]
 
+// gravity 
 public class DownLogic : MonoBehaviour {
 
     private Vector3 chooseGooseNorm;

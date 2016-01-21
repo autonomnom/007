@@ -1,28 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-
+// camera, who to follow and staying smooth
 public class FollowTheTarget : MonoBehaviour {
-
-    GameObject igor; 
 
     [SerializeField] private float camDistance = 42f;
     [SerializeField] private float camUp = 10f;
     [SerializeField] private float smoothy1 = 1.2f;
-    [SerializeField] private Transform foollow;
-
+    private Transform foollow;
     private Vector3 targetPosition;
 
     void Awake() {
 
-        //finding the soul to follow
-        foollow = GameObject.Find("Soul").transform;
+        //starts with..
+        foollow = GameObject.Find("Soul").transform; // Igor
     }
 
-	void Start () {
+	void Start() {
 	    
 	}
-	
+
+    void Update() {
+
+        //finding the soul to follow while changing
+        switch (G.identitaet) {
+            case G.Who.Igor: foollow = GameObject.Find("Soul").transform; break;     
+            case G.Who.James: foollow = GameObject.Find("Seele").transform; break;    
+            case G.Who.Frida: foollow = GameObject.Find("Spirit").transform; break;    
+            case G.Who.Adam: foollow = GameObject.Find("Ghost").transform; break;       
+            default: foollow = GameObject.Find("Soul").transform; break;
+        }
+    }
+
 	void FixedUpdate () {
 
         // Maybe got to split this values up to get independent rotation/adjusting speed 
