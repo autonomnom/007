@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 // The off
 public class Puppenspiel : MonoBehaviour {
 
+    void Awake() {
+
+    }
+
 	void Start () {
-	
+
 	}
 	
 	void Update () {

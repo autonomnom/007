@@ -13,7 +13,9 @@ public class FollowTheTarget : MonoBehaviour {
     void Awake() {
 
         //starts with..
-        foollow = GameObject.Find("Soul").transform; // Igor
+        GameObject hihi = GameObject.Find(G.identitaet.ToString()); 
+        Transform child = hihi.transform.GetChild(0);
+        foollow = GameObject.Find(child.name).transform; 
     }
 
 	void Start() {
