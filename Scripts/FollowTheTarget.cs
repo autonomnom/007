@@ -43,9 +43,8 @@ public class FollowTheTarget : MonoBehaviour {
 
     /// <summary>
     /// <para>Find the identity to follow.</para>
-    /// <value>index : the index of child in the parents childlist, has to be of type "Seele".</value>
     /// </summary>
-    void findFollow(int index = 0) {
+    void findFollow() {
 
         Transform hihi = GameObject.Find(G.identitaet.ToString()).GetComponentInChildren<Seele>().transform;
         foollow = GameObject.Find(hihi.name).transform; 
