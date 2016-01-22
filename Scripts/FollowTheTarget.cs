@@ -47,7 +47,7 @@ public class FollowTheTarget : MonoBehaviour {
     /// </summary>
     void findFollow(int index = 0) {
 
-        Transform hihi = GameObject.Find(G.identitaet.ToString()).transform.GetChild(index);
+        Transform hihi = GameObject.Find(G.identitaet.ToString()).GetComponentInChildren<Seele>().transform;
         foollow = GameObject.Find(hihi.name).transform; 
     }
 }
