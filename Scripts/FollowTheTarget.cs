@@ -7,15 +7,12 @@ public class FollowTheTarget : MonoBehaviour {
     [SerializeField] private float camDistance = 42f;
     [SerializeField] private float camUp = 10f;
     [SerializeField] private float smoothy1 = 1.2f;
-    private Transform foollow;
     private Vector3 targetPosition;
+    private Transform foollow;
 
     void Awake() {
 
-        //starts with..
-        GameObject hihi = GameObject.Find(G.identitaet.ToString()); 
-        Transform child = hihi.transform.GetChild(0);
-        foollow = GameObject.Find(child.name).transform; 
+        findFollow();
     }
 
 	void Start() {
@@ -23,19 +20,12 @@ public class FollowTheTarget : MonoBehaviour {
 	}
 
     void Update() {
-
-        //finding the soul to follow while changing
-        switch (G.identitaet) {
-            case G.Who.Igor: foollow = GameObject.Find("Soul").transform; break;     
-            case G.Who.James: foollow = GameObject.Find("Seele").transform; break;    
-            case G.Who.Frida: foollow = GameObject.Find("Spirit").transform; break;    
-            case G.Who.Adam: foollow = GameObject.Find("Ghost").transform; break;       
-            default: foollow = GameObject.Find("Soul").transform; break;
-        }
+        
+        findFollow();
     }
 
 	void FixedUpdate () {
-
+        
         // Maybe got to split this values up to get independent rotation/adjusting speed 
         // for vertical and horizontal.
 
@@ -46,4 +36,14 @@ public class FollowTheTarget : MonoBehaviour {
         //adjust rotation
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(foollow.position - transform.position, foollow.up), 0.15f);
 	}
+
+    /// <summary>
+    /// <para>Find the identity to follow.</para>
+    /// <value>index : the index of child in the parents childlist, has to be of type "Seele".</value>
+    /// </summary>
+    void findFollow(int index = 0) {
+
+        Transform hihi = GameObject.Find(G.identitaet.ToString()).transform.GetChild(index);
+        foollow = GameObject.Find(hihi.name).transform; 
+    }
 }
