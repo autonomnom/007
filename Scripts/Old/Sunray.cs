@@ -1,21 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// for casting rays, checking for nearest normal & 
-public class Xray {
+public class Sunray : MonoBehaviour {
 
     private Rigidbody _body;
 
-    public Xray(Rigidbody body) {
+    public Sunray(Rigidbody body) {
 
         _body = body;
     }
 
-    /// <summary>
-    /// Gathering an array of Rays with spherical directions.
-    /// </summary>
-    /// <param name="rayz">The amount of rays to be gathered.</param>
-    /// <returns>a Ray[]</returns>
     public Ray[] letTheRaysRain(int rayz) {
 
         // old code
@@ -54,12 +48,6 @@ public class Xray {
         return allrayz;
     }
 
-    /// <summary>
-    /// Checking for the nearest normal in a distance of 100f.
-    /// </summary>
-    /// <param name="allrayz">An array populated with rays.</param>
-    /// <param name="layerMask">The layerMask type to be checked.</param>
-    /// <returns>The closest normal.</returns>
     public Vector3 findTheNearestNormal(Ray[] allrayz, LayerMask layerMask) {
 
         float distance = 100f;
@@ -81,4 +69,3 @@ public class Xray {
         return normal;
     }
 }
-

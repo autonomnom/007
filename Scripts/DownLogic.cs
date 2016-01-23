@@ -1,29 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 	
-[RequireComponent(typeof(Xray))]
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Bewegungskraefte))]
 
 // gravity 
 public class DownLogic : MonoBehaviour {
 
     private Vector3 chooseGooseNorm;
-    private Vector3 chooseGoosePoint;
-    private Vector3 chooseGoose;
-
-    // script for finding the right normal
-    Xray rray;
 
     public float gravity = -250f;
     Rigidbody body;
+    Bewegungskraefte fuese;
+    Xray rray;
 
     void Awake() {
 
-        rray = GetComponent<Xray>();
+        fuese = GetComponent<Bewegungskraefte>();
 
         body = GetComponent<Rigidbody>();
         body.constraints = RigidbodyConstraints.FreezeRotation;
         body.useGravity = false;
+        
+        rray = new Xray(body);
     }
 
 	void Start () {
@@ -31,13 +30,30 @@ public class DownLogic : MonoBehaviour {
 	}
 	
 	void Update () {
-	
+
+        // get normal while on ground..
+        if (fuese.grounded) {
+
+            Ray rey = new Ray(body.position, -body.transform.up);
+            RaycastHit bey;
+
+            if (Physics.Raycast(rey, out bey, 1.5f, fuese.groundMask)) {
+
+                chooseGooseNorm = bey.normal;
+            }
+            else chooseGooseNorm = body.transform.up;
+        }
+        // and while in air.
+        else {
+
+            Ray[] sonne = rray.letTheRaysRain(18);
+            chooseGooseNorm = rray.findTheNearestNormal(sonne, fuese.groundMask);
+        }
 	}
 
     void FixedUpdate() {
 
         // applying rotation based on the triangles normal below
-        chooseGooseNorm = rray.theNorm;
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.FromToRotation(transform.up, chooseGooseNorm) * transform.rotation, .5f);
         body.AddForce(chooseGooseNorm * gravity);
     }
