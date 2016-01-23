@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// to be attached to an root identity object
 public class Biografie : MonoBehaviour {
 
     [HideInInspector] public bool aktiv = false;

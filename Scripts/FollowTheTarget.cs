@@ -29,15 +29,12 @@ public class FollowTheTarget : MonoBehaviour {
 
 	void FixedUpdate () {
         
-        // Maybe got to split this values up to get independent rotation/adjusting speed 
-        // for vertical and horizontal.
-
-        //getting in position
-        //using body.postion instead of transform.position enables camera collision, got to be adjusted though
+        // getting in position
+        // using body.postion instead of transform.position enables camera collision, got to be adjusted though
         targetPosition = foollow.position + foollow.up * camUp - foollow.forward * camDistance;
         body.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * smoothy1);
 
-        //adjust rotation
+        // adjust rotation
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(foollow.position - transform.position, foollow.up), 0.15f);
 	}
 

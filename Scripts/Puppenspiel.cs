@@ -15,7 +15,7 @@ public class Puppenspiel : MonoBehaviour {
 	
 	void Update () {
 	
-        //switch the identities
+        // switch the identities
         if (Input.GetKeyDown(KeyCode.T)) {
 
             if (G.identitaet != G.Who.Adam) { G.identitaet++; }

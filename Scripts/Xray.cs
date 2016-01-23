@@ -21,7 +21,7 @@ public class Xray : MonoBehaviour {
 	
 	void Update () {
 
-        //check for the normal you standing on
+        // check for the normal you standing on
         if (muskel.grounded) {
 
             Ray rey = new Ray(body.position, -body.transform.up);
@@ -34,12 +34,12 @@ public class Xray : MonoBehaviour {
             else theNorm = body.transform.up;
         }
 
-        //check for normals all around you while flying
+        // check for normals all around you while flying
         else {
 
             if (rayAmount != 0) {
 
-                //gather the desired rays
+                // gather the desired rays
                 Ray[] allRayz = new Ray[rayAmount];
 
                 for (int i = 0; i < allRayz.Length; i++) {
@@ -72,7 +72,7 @@ public class Xray : MonoBehaviour {
                     else if (i == 25) { allRayz[i] = new Ray(body.position, -body.transform.up - body.transform.right); }
                 }
 
-                //find the nearest ground
+                // find the nearest ground
                 float distance = 100f;
 
                 for (int i = 0; i < allRayz.Length; i++) {
@@ -88,7 +88,7 @@ public class Xray : MonoBehaviour {
                     }
                 }
 
-                //Hint for setting the right amount of casted rays
+                // Hint for setting the right amount of casted rays
                 if (rayAmount != 2 && rayAmount != 6 && rayAmount != 14 && rayAmount != 18 && rayAmount != 26) {
 
                     Debug.LogAssertion("Rayamount should be 2, 6, 14, 18 or 26 to secure consistent sphercial check.");

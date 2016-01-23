@@ -16,7 +16,7 @@ public class Bewegungskraefte : MonoBehaviour {
     Vector3 smoothMoveVelocity;
     Quaternion rotationAmount;
 
-    //for goundcheck, needed in Xray.cs
+    // for goundcheck, needed in Xray.cs
     [HideInInspector] public bool grounded;
     public LayerMask groundMask;
 
@@ -37,19 +37,19 @@ public class Bewegungskraefte : MonoBehaviour {
 
         if (bio.aktiv) {
 
-            //WASD
-            //forward + backwards
+            // WASD
+            // forward + backwards
             Vector3 moveDir = new Vector3(0, 0, Input.GetAxisRaw("Vertical")).normalized;
             Vector3 targetMoveAmount = moveDir * walkSpeed;
             moveAmnount = Vector3.SmoothDamp(moveAmnount, targetMoveAmount, ref smoothMoveVelocity, .15f);
 
-            //left + right
+            // left + right
             Vector3 horizontalInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, 0).normalized;
             float desiredAngle = 49f;
             desiredAngle *= horizontalInput.x;
             rotationAmount = Quaternion.AngleAxis(desiredAngle, body.transform.up);
 
-            //up
+            // up
             if (Input.GetButtonDown("Jump")) {
 
                 if (grounded) {
