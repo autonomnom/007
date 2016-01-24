@@ -8,7 +8,6 @@ using System.Collections;
 public class DownLogic : MonoBehaviour {
 
     private Vector3 chooseGooseNorm;
-    private Vector3 _chooseGooseNorm;
 
     public float gravity = -250f;
     Rigidbody body;
@@ -28,7 +27,7 @@ public class DownLogic : MonoBehaviour {
 
 	void Start () {
 
-        _chooseGooseNorm = body.transform.up;
+        chooseGooseNorm = body.transform.up;
 	}
 	
 	void Update () {
@@ -41,9 +40,9 @@ public class DownLogic : MonoBehaviour {
 
             if (Physics.Raycast(rey, out bey, 1.5f, fuese.groundMask)) {
 
-                _chooseGooseNorm = bey.normal;
+                chooseGooseNorm = bey.normal;
             }
-            else _chooseGooseNorm = body.transform.up;
+            else chooseGooseNorm = body.transform.up;
         }
         // and while in air.
         else {
@@ -51,16 +50,15 @@ public class DownLogic : MonoBehaviour {
             if (rray != null) { 
              
                 Ray[] sonne = rray.letTheRaysRain(18);
-                _chooseGooseNorm = rray.findTheNearestNormal(sonne, fuese.groundMask); 
+                chooseGooseNorm = rray.findTheNearestNormal(sonne, fuese.groundMask); 
             }
-            else _chooseGooseNorm = body.transform.up;
+            else chooseGooseNorm = body.transform.up;
         }
 	}
 
     void FixedUpdate() {
 
         // applying rotation based on the triangles normal below
-        chooseGooseNorm = _chooseGooseNorm;
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.FromToRotation(transform.up, chooseGooseNorm) * transform.rotation, .5f);
         body.AddForce(chooseGooseNorm * gravity);
     }
