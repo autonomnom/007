@@ -50,7 +50,7 @@ public class DownLogic : MonoBehaviour {
             if (rray != null) { 
              
                 Ray[] sonne = rray.letTheRaysRain(18);
-                chooseGooseNorm = rray.findTheNearestNormal(sonne, fuese.groundMask); 
+                chooseGooseNorm = rray.findTheNearestNormal(sonne, fuese.groundMask, 10); 
             }
             else chooseGooseNorm = body.transform.up;
         }

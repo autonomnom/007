@@ -38,8 +38,9 @@ public class Xray {
     /// </summary>
     /// <param name="allrayz">An array populated with rays.</param>
     /// <param name="layerMask">The layerMask type to be checked.</param>
+    /// <param name="range">The max range of the ray.</param>
     /// <returns>The closest normal.</returns>
-    public Vector3 findTheNearestNormal(Ray[] allrayz, LayerMask layerMask) {
+    public Vector3 findTheNearestNormal(Ray[] allrayz, LayerMask layerMask, float range) {
 
         float distance = 100f;
         Vector3 normal = _body.transform.up;
@@ -47,7 +48,7 @@ public class Xray {
         for (int i = 0; i < allrayz.Length; i++) {
 
             RaycastHit piu;
-            if (Physics.Raycast(allrayz[i], out piu, layerMask)) {
+            if (Physics.Raycast(allrayz[i], out piu, range, layerMask)) {
 
                 if (piu.distance < distance) {
 
