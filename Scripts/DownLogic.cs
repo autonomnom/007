@@ -27,7 +27,6 @@ public class DownLogic : MonoBehaviour {
 
 	void Start () {
 
-        chooseGooseNorm = body.transform.up;
 	}
 	
 	void Update () {

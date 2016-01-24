@@ -4,6 +4,7 @@ using System.Collections;
 // for casting rays, checking for nearest normal & 
 public class Xray {
 
+    public bool activateDebug = false;
     private Rigidbody _body;
 
     public Xray(Rigidbody body) {
@@ -28,6 +29,15 @@ public class Xray {
             float x = Mathf.Sin(i * abstand) * Mathf.Sin(phi);
             float z = Mathf.Sin(i * abstand) * Mathf.Cos(phi);
             rayt[i] = new Ray(_body.position, new Vector3(x, y, z));      
+        }
+
+        // for debug
+        if (activateDebug) {
+
+            for (int i = 0; i < rayt.Length; i++) {
+
+                Debug.DrawRay(rayt[i].origin, rayt[i].direction);
+            }
         }
 
         return rayt;
