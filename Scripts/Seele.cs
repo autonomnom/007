@@ -6,11 +6,21 @@ using System.Collections;
 // that is used to find the right Seele.
 public class Seele : MonoBehaviour {
 
-	void Start () {
-	
+    FollowTheTarget cameraScript;
+    [HideInInspector] public Transform followMePlz; 
+
+	void Awake() {
+
+        cameraScript = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<FollowTheTarget>();
+        followMePlz = this.transform;
 	}
 	
-	void Update () {
-	
+	void Update() {
+
+        if (cameraScript.status != FollowTheTarget.Polizei.fern) {
+
+            followMePlz = this.transform.parent;
+        }
+        else { followMePlz = this.transform; }
 	}
 }
