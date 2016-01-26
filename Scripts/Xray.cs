@@ -70,5 +70,20 @@ public class Xray {
 
         return normal;
     }
+
+    // if it works with bool, consider changing to unity intern function SphereCollision()
+    public bool checkForCollisionNearBy(Ray[] allrayz, LayerMask layerMask, float castRange) {
+
+        for (int i = 0; i < allrayz.Length; i++) {
+
+            RaycastHit piu;
+            if (Physics.Raycast(allrayz[i], out piu, castRange, layerMask)) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
 
