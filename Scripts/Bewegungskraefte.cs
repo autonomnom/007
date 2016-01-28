@@ -23,12 +23,8 @@ public class Bewegungskraefte : MonoBehaviour {
     Rigidbody body;
     Biografie bio;
 
-    //Mous
-    //Transform kamera;
-
 	void Start () {
 
-        //kamera = Camera.main.transform;
         body = GetComponent<Rigidbody>();
         bio = GetComponent<Biografie>();
 	}
@@ -64,9 +60,6 @@ public class Bewegungskraefte : MonoBehaviour {
 
                 grounded = true;
             }
-
-
-            //MOUS 
         }
     }
 	

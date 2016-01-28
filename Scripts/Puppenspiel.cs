@@ -18,8 +18,8 @@ public class Puppenspiel : MonoBehaviour {
         // switch the identities
         if (Input.GetKeyDown(KeyCode.T)) {
 
-            if (G.identitaet != G.Who.Adam) { G.identitaet++; }
-            else G.identitaet = G.Who.Igor;
+            if (G.identitaet != G.Who.ADAM) { G.identitaet++; }
+            else G.identitaet = G.Who.IGOR;
         }
 	}
 }
