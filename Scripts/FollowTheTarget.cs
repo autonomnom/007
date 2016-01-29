@@ -19,8 +19,8 @@ public class FollowTheTarget : MonoBehaviour {
     [SerializeField] private float camDistance = 42f;
     [SerializeField] private float camUp = 10f;
     [SerializeField] private float smoothy1 = 1.2f;
-    private float camDistanceZoom = 1f;
-    private float camUpZoom = 2f;
+    private float camDistanceZoom = 5f;
+    private float camUpZoom = 1.5f;
     private float lerpBeschleunigung;
 
     private float _camDistance;
@@ -36,7 +36,8 @@ public class FollowTheTarget : MonoBehaviour {
     private Vector3 _targetPosition;
     private Transform foollow;
     private Rigidbody body;
-
+    private SphereCollider sphere;
+    private float _sr;
 
     void Awake() {
 
@@ -46,12 +47,12 @@ public class FollowTheTarget : MonoBehaviour {
 
         _camDistance = camDistance;
         _camUp = camUp;
-
-        rray.activateDebug = false;
     }
 
 	void Start() {
 
+        sphere = GetComponent<SphereCollider>();
+        _sr = sphere.radius;
 	}
 
     void Update() {
@@ -68,7 +69,7 @@ public class FollowTheTarget : MonoBehaviour {
         targetPosition = foollow.position + foollow.up * camUp - foollow.forward * camDistance;
 
         // applying the targetposition to the camera's body position
-        body.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * smoothy1);
+        body.position = Vector3.Lerp(transform.position, targetPosition, Time.fixedDeltaTime * smoothy1);
 
         // adjust rotation
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(foollow.position - transform.position, foollow.up), 0.1f);
@@ -91,24 +92,29 @@ public class FollowTheTarget : MonoBehaviour {
     bool obstacleDetected() {
 
         GameObject ida = GameObject.Find(G.identitaet.ToString());
-        float distance = Vector3.Distance(ida.transform.position, body.position);
+        float distance = Vector3.Distance(ida.transform.position, body.position);  // ~ 44f by default
         RaycastHit bam;
+
+        sphereResize(distance, 30, 12);
 
         // straight "camera <-> identity" check
         Ray augenKontakt = new Ray(body.position, -(body.position - ida.transform.position));
+                    
+                //Debug.DrawLine(body.position, body.position + Vector3.Scale(augenKontakt.direction, new Vector3(distance, distance, distance)), Color.red);
+
         if(Physics.Raycast(augenKontakt, out bam, distance, groundMask)) {
 
-            Debug.Log("auge");
             return true;
         }
 
         // cylinder check around the identity
-        Ray[] zyli = rray.tanzTanzRingeltanz(ida.transform, 8, 3f, .8f, .15f);
+        Ray[] zyli = rray.tanzTanzRingeltanz(ida.transform, 8, 2f, .8f, .15f);
         for (int i = 0; i < zyli.Length; i++) {
 
-            if (Physics.Raycast(zyli[i], out bam, distance - 5f, groundMask)) {
-                
-                Debug.Log("zylinder");
+                    //Debug.DrawLine(body.position, body.position + Vector3.Scale(zyli[i].direction, new Vector3(distance - .5f, distance - .5f, distance - .5f)), Color.green);
+
+            if (Physics.Raycast(zyli[i], out bam, distance - .5f, groundMask)) {
+
                 return true;
             }
         }
@@ -122,9 +128,10 @@ public class FollowTheTarget : MonoBehaviour {
             position[2] = kampi.position + Vector3.Scale(kampi.right, new Vector3(rayWeiteAmPo, rayWeiteAmPo, rayWeiteAmPo));       // ost
         for (int i = 0; i < position.Length; i++) {
 
-            if(Physics.Raycast(new Ray(body.position, (body.position - position[i]).normalized), out bam, rayWeiteAmPo, groundMask)) {
+                    //Debug.DrawLine(body.position, position[i], Color.yellow);
 
-                Debug.Log("kompass");
+            if(Physics.Raycast(new Ray(body.position, -(body.position - position[i]).normalized), out bam, rayWeiteAmPo, groundMask)) {
+
                 return true;
             }
         }
@@ -132,6 +139,18 @@ public class FollowTheTarget : MonoBehaviour {
         return false;
     }
 
+    // resizing the sphere to get more moveing possibilities while being near to the target
+    void sphereResize(float distanz, float start = 44f, float ende = 0f) {
+
+        if (distanz < start) {
+
+            sphere.radius = (distanz > ende) ? (_sr / (start / distanz)) / (start / distanz) : 1f;
+        }
+        else {
+
+            sphere.radius = _sr;
+        }
+    }
 
     /// <summary>
     /// Adjusting camera orientation depending on its state (Polizei).
@@ -161,7 +180,7 @@ public class FollowTheTarget : MonoBehaviour {
         else if (status == Polizei.reisendzu) {
 
             // to the target
-            if (camDistance != camDistanceZoom || camUp != camUpZoom) {
+            if (!Mathf.Approximately(camDistance, camDistanceZoom) || !Mathf.Approximately(camUp, camUpZoom)) {
 
                 if (camDistance > camDistanceZoom) { camDistance = Mathf.SmoothDamp(camDistance, camDistanceZoom, ref lerpBeschleunigung, 0.01f, 300, Time.fixedDeltaTime); }
                 if (camUp > camUpZoom) { camUp = Mathf.SmoothDamp(camUp, camUpZoom, ref lerpBeschleunigung, 0.05f, 25, Time.fixedDeltaTime); }
@@ -195,7 +214,7 @@ public class FollowTheTarget : MonoBehaviour {
         // away to the original camera position
         else if (status == Polizei.reisendweg) {
 
-            if (camDistance != _camDistance || camUp != _camUp) {
+            if (!Mathf.Approximately(camDistance, _camDistance) || !Mathf.Approximately(camUp, _camUp)) {
 
                 if (camDistance < _camDistance) { camDistance = Mathf.SmoothDamp(camDistance, _camDistance, ref lerpBeschleunigung, 1f, 36, Time.fixedDeltaTime); }
                 if (camUp < _camUp) { camUp = Mathf.SmoothDamp(camUp, _camUp, ref lerpBeschleunigung, 1f, 25, Time.fixedDeltaTime); }

@@ -6,8 +6,10 @@ using System.Collections;
 // that is used to find the right Seele.
 public class Seele : MonoBehaviour {
 
+    [HideInInspector] public Transform followMePlz;
+
     FollowTheTarget cameraScript;
-    [HideInInspector] public Transform followMePlz; 
+    Vector3 smoothVelo;
 
 	void Awake() {
 
@@ -17,10 +19,27 @@ public class Seele : MonoBehaviour {
 	
 	void Update() {
 
-        if (cameraScript.status != FollowTheTarget.Polizei.fern) {
+        if (cameraScript.status == FollowTheTarget.Polizei.nah || cameraScript.status == FollowTheTarget.Polizei.reisendzu) {
 
-            followMePlz = this.transform.parent;
+            moveCloser(true);
         }
-        else { followMePlz = this.transform; }
+        else {
+
+            moveCloser(false);
+        }
 	}
+
+    /// <summary>
+    /// Moving the soul on its parent up-axis.
+    /// </summary>
+    /// <param name="which">Goes towards the parent if true, otherwise away from it.</param>
+    void moveCloser(bool which) {
+
+        Transform papa = transform.parent.transform;
+        Vector3 desire = which ? papa.position : papa.position + Vector3.Scale(papa.up, new Vector3(4, 4, 4));
+        float smooth = which ? 0.5f : 1.5f;
+        float max = which ? 70f : 40f;
+
+        transform.position = Vector3.SmoothDamp(transform.position, desire, ref smoothVelo, smooth, max, Time.deltaTime);
+    }
 }
