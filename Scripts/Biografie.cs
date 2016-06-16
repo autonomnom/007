@@ -5,6 +5,7 @@ using System.Collections;
 public class Biografie : MonoBehaviour {
 
     [HideInInspector] public bool aktiv = false;
+    [HideInInspector] public bool fipsi = true;  
 
     void Awake() {
 
@@ -22,5 +23,11 @@ public class Biografie : MonoBehaviour {
             aktiv = true;
         }
         else aktiv = false;
+
+        // switch between first and third person view
+        if (Input.GetKeyDown(KeyCode.H)) {
+
+            fipsi = !fipsi;
+        }
 	}
 }

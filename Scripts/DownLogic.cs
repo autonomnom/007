@@ -31,6 +31,11 @@ public class DownLogic : MonoBehaviour {
 	
 	void Update () {
 
+
+	}
+
+    void FixedUpdate() {
+
         // get normal while on ground..
         if (fuese.grounded) {
 
@@ -53,9 +58,6 @@ public class DownLogic : MonoBehaviour {
             }
             else chooseGooseNorm = body.transform.up;
         }
-	}
-
-    void FixedUpdate() {
 
         // applying rotation based on the triangles normal below
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.FromToRotation(transform.up, chooseGooseNorm) * transform.rotation, .5f);

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 // camera, who to follow and staying smooth
-public class FollowTheTarget : MonoBehaviour {
+public class FollowTheTargetWithNewDistance : MonoBehaviour {
 
     public enum Polizei {
 
@@ -16,11 +16,11 @@ public class FollowTheTarget : MonoBehaviour {
 
     public LayerMask groundMask;
    
-    [SerializeField] private float camDistance = 12f;
-    [SerializeField] private float camUp = 2f;
+    [SerializeField] private float camDistance = 42f;
+    [SerializeField] private float camUp = 10f;
     [SerializeField] private float smoothy1 = 1.2f;
-    private float camDistanceZoom = 4f;
-    private float camUpZoom = 1.1f;
+    private float camDistanceZoom = 5f;
+    private float camUpZoom = 1.5f;
     private float lerpBeschleunigung;
 
     private float _camDistance;
@@ -35,10 +35,8 @@ public class FollowTheTarget : MonoBehaviour {
     private Vector3 targetPosition;
     private Vector3 _targetPosition;
     private Transform foollow;
-    private Biografie bio;
     private Rigidbody body;
     private SphereCollider sphere;
-    private Camera vogelkamera;
     private float _sr;
 
     void Awake() {
@@ -46,7 +44,6 @@ public class FollowTheTarget : MonoBehaviour {
         findFollow();
         body = GetComponent<Rigidbody>();
         rray = new Xray(body);
-        vogelkamera = GetComponent<Camera>();
 
         _camDistance = camDistance;
         _camUp = camUp;
@@ -64,10 +61,6 @@ public class FollowTheTarget : MonoBehaviour {
     }
 
 	void FixedUpdate () {
-
-        // changing between the cameras - maybe use tags instead of active
-        if (bio.fipsi) { vogelkamera.enabled = false; }
-        else { vogelkamera.enabled = true; }
 
         // ckecking for state, zoom in or out
         zoomy();
@@ -89,7 +82,6 @@ public class FollowTheTarget : MonoBehaviour {
     void findFollow() {
 
         foollow = GameObject.Find(G.identitaet.ToString()).GetComponentInChildren<Seele>().followMePlz;
-        bio = foollow.GetComponentInParent<Biografie>();
     }
 
 

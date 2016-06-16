@@ -8,12 +8,12 @@ public class Seele : MonoBehaviour {
 
     [HideInInspector] public Transform followMePlz;
 
-    FollowTheTarget cameraScript;
-    Vector3 smoothVelo;
+    private FollowTheTarget cameraScript;
+    private Vector3 smoothVelo;
 
 	void Awake() {
 
-        cameraScript = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<FollowTheTarget>();
+        cameraScript = GameObject.Find("Vogel").GetComponent<FollowTheTarget>();
         followMePlz = this.transform;
 	}
 	
@@ -36,7 +36,7 @@ public class Seele : MonoBehaviour {
     void moveCloser(bool which) {
 
         Transform papa = transform.parent.transform;
-        Vector3 desire = which ? papa.position : papa.position + Vector3.Scale(papa.up, new Vector3(4, 4, 4));
+        Vector3 desire = which ? papa.position : papa.position + Vector3.Scale(papa.up, new Vector3(3, 3, 3));
         float smooth = which ? 0.5f : 1.5f;
         float max = which ? 70f : 40f;
 
