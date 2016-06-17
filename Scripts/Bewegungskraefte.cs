@@ -28,6 +28,8 @@ public class Bewegungskraefte : MonoBehaviour {
 
         body = GetComponent<Rigidbody>();
         bio = GetComponent<Biografie>();
+
+        rotationAmount = new Quaternion(0, 0, 0, 1);
 	}
 
     void Update() {

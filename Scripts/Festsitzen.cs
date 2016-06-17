@@ -5,6 +5,7 @@ public class Festsitzen : MonoBehaviour {
 
     private Transform folow;
     private float off = 2f;
+    private float smooty = 8.5f;
 
 	void Start () {
 
@@ -19,7 +20,7 @@ public class Festsitzen : MonoBehaviour {
         this.gameObject.transform.position = folow.transform.position + Vector3.Scale(folow.up, new Vector3(off, off, off));
 
         // get his rotation
-        this.gameObject.transform.rotation = folow.transform.rotation;
+        this.gameObject.transform.rotation = Quaternion.Slerp(this.gameObject.transform.rotation, folow.transform.rotation, Time.fixedDeltaTime * smooty);
 	}
 
 

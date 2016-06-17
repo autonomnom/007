@@ -8,6 +8,7 @@ public class ImKopf : MonoBehaviour {
     private Transform fooloow;
     private Biografie bio;
     private GameObject camera;
+    private Vector3 localEu;
 
     // the amount the camera is above the player while in first-person-view
     private int off = 2;
@@ -19,7 +20,9 @@ public class ImKopf : MonoBehaviour {
 	}
 	
 	void Update () {
-        
+
+        // getLocalEuler for looping protection
+        localEu = camera.transform.localEulerAngles;
 	}
 
     void FixedUpdate() {
@@ -59,7 +62,7 @@ public class ImKopf : MonoBehaviour {
         // variables has to be function-exluded to make them publicly available
         float rotAverageY = 0f;
         List<float> rotArrayY = new List<float>();
-        float sensitivityY = 5.5f;
+        float sensitivityY = 3.5f;
         float rotationY = 0f;
         float framesOfSmoothing = 25f;
         float minimumY = -55f;
@@ -90,10 +93,48 @@ public class ImKopf : MonoBehaviour {
         }
         rotAverageY /= rotArrayY.Count;
 
-        // save the desired amount
-        rotationAmount = Quaternion.AngleAxis(rotAverageY, camera.transform.right);
+        // set a fixed angle range for up & downview
+        rotAverageY = fixedAngelSpectrum(rotAverageY);
 
+        //apply it
+        camera.transform.Rotate(new Vector3(rotAverageY, 0, 0));
+        
+        /* deprecated. 
+        // save the desired amount for quaternion rotation
+        rotationAmount = Quaternion.AngleAxis(rotAverageY, camera.transform.right);
         // apply it
-        camera.transform.rotation = Quaternion.Slerp(camera.transform.rotation, rotationAmount * camera.transform.rotation, Time.fixedDeltaTime * 5); //rotationAmount * camera.transform.rotation
+        camera.transform.rotation = Quaternion.Slerp(camera.transform.rotation, rotationAmount * camera.transform.rotation, Time.fixedDeltaTime * 5); //rotationAmount * camera.transform.rotation   
+        */
+    }
+
+
+    /// <summary>
+    /// Reset the given angle based on a fixed angle width.
+    /// </summary>
+    /// <param name="ay"> the given angle of the mouse input </param>
+    /// <returns> a decreased angle to block an over-movement </returns>
+    float fixedAngelSpectrum(float ay) {
+
+        float avg = ay;
+
+        if (localEu.x >= 0f && localEu.x < 85f) {
+
+            if (localEu.x + avg > 85f) {
+
+                avg = 85 - localEu.x - 1;
+            }
+
+            return avg;
+        }
+        else if (localEu.x <= 360 && localEu.x > 280) {
+
+            if (localEu.x + avg < 280) {
+
+                avg = 280 - localEu.x + 1;
+            }
+
+            return avg;
+        }
+        else return avg;
     }
 }

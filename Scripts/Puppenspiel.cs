@@ -11,6 +11,8 @@ public class Puppenspiel : MonoBehaviour {
 
 	void Start () {
 
+        // CURSOR
+        Cursor.visible = true;
 	}
 	
 	void Update () {
