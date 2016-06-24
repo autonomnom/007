@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Biografie))]
 
 // let the identities dance!
-public class Bewegungskraefte : MonoBehaviour {
+public class Bewegungskraefte : NetworkBehaviour {
 
     public float walkSpeed = 13f;
     public float turnSpeed = 1.95f;
@@ -34,9 +35,12 @@ public class Bewegungskraefte : MonoBehaviour {
 
     void Update() {
 
-        // bio aktiv allows only the selected avatar to be moved by input
-        if (bio.aktiv) {
+        if(!isLocalPlayer) {
 
+            return;
+        }
+
+        // bio aktiv allows only the selected avatar to be moved by input
             // WASD
             // forward + backwards + left + right
             Vector3 dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
@@ -71,26 +75,28 @@ public class Bewegungskraefte : MonoBehaviour {
 
                 MFPV();
             }
-        }
     }
 	
 	void FixedUpdate() {
 
-        if (bio.aktiv) {
+        if(!isLocalPlayer) {
 
-            //applying movement
-            body.MovePosition(body.position + GetComponent<Transform>().TransformDirection(moveAmount) * Time.fixedDeltaTime);
-            //applying mouse rotation
-            if (bio.fipsi) { 
-
-                //body.MoveRotation(rotationAmount * body.rotation);  // jitterless, dafür sind die kanten härter + er hängt an diesen etwas
-                body.MoveRotation(Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed * 10));
-            }
-            else {
-
-                body.MoveRotation(Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed));
-            }        
+            return;
         }
+
+        //applying movement
+        body.MovePosition(body.position + GetComponent<Transform>().TransformDirection(moveAmount) * Time.fixedDeltaTime);
+
+        //applying mouse rotation
+        if (bio.fipsi) { 
+
+            //body.MoveRotation(rotationAmount * body.rotation);  // jitterless, dafür sind die kanten härter + er hängt an diesen etwas
+            body.MoveRotation(Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed * 10));
+        }
+        else {
+
+            body.MoveRotation(Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed));
+        }        
 	}
 
     /// <summary>

@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 	
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Bewegungskraefte))]
 
 // gravity 
-public class DownLogic : MonoBehaviour {
+public class DownLogic : NetworkBehaviour {
 
     private Vector3 chooseGooseNorm;
 
@@ -16,6 +17,15 @@ public class DownLogic : MonoBehaviour {
 
     void Awake() {
 
+    }
+
+	void Start () {
+
+        if(!isLocalPlayer) {
+
+            return;
+        }
+
         fuese = GetComponent<Bewegungskraefte>();
 
         body = GetComponent<Rigidbody>();
@@ -23,18 +33,18 @@ public class DownLogic : MonoBehaviour {
         body.useGravity = false;
         
         rray = new Xray(body);
-    }
-
-	void Start () {
-
 	}
 	
 	void Update () {
 
-
 	}
 
     void FixedUpdate() {
+
+        if (!isLocalPlayer) {
+
+            return;
+        }
 
         // get normal while on ground..
         if (fuese.grounded) {

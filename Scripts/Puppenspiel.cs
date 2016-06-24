@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -16,7 +17,8 @@ public class Puppenspiel : MonoBehaviour {
 	}
 	
 	void Update () {
-	
+
+        /*
         // switch the identities
         if (Input.GetKeyDown(KeyCode.T)) {
 
@@ -30,5 +32,6 @@ public class Puppenspiel : MonoBehaviour {
             if (G.sicht == G.cam.FIRST) { G.sicht = G.cam.THIRD; }
             else { G.sicht = G.cam.FIRST; }
         }
+        */
 	}
 }
