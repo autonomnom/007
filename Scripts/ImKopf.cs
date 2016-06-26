@@ -67,8 +67,6 @@ public class ImKopf : MonoBehaviour {
         float maximumY = 55f;
         bool invertY = true;
 
-        Quaternion rotationAmount;
-
         // optional inversion
         float invertFlag = 1f;
         if (invertY) {
