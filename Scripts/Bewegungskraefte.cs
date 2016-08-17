@@ -35,46 +35,46 @@ public class Bewegungskraefte : NetworkBehaviour {
 
     void Update() {
 
-        if(!isLocalPlayer) {
+        if (!isLocalPlayer) {
 
             return;
         }
 
-        // bio aktiv allows only the selected avatar to be moved by input
-            // WASD
-            // forward + backwards + left + right
-            Vector3 dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-            Vector3 plusWalk = dir * walkSpeed;
-            moveAmount = Vector3.SmoothDamp(moveAmount, plusWalk, ref smoothMoveVelocity, .15f);
+        // WASD
+        // forward + backwards + left + right
+        Vector3 dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+        Vector3 plusWalk = dir * walkSpeed;
+        moveAmount = Vector3.SmoothDamp(moveAmount, plusWalk, ref smoothMoveVelocity, .15f);
 
-            // up
-            if (Input.GetButtonDown("Jump")) {
+        // up
+        if (Input.GetButtonDown("Jump")) {
 
-                if (grounded) {
-                    body.AddForce(body.transform.up * jumpForce, ForceMode.VelocityChange);
-                }
+            if (grounded) {
+
+                body.AddForce(body.transform.up * jumpForce, ForceMode.VelocityChange);
             }
+        }
 
-            grounded = false;
-            Ray charles = new Ray(transform.position, -transform.up);
-            RaycastHit wonder;
-            if (Physics.Raycast(charles, out wonder, colliderHalf + .1f, groundMask)) {
+        grounded = false;
+        Ray charles = new Ray(transform.position, -transform.up);
+        RaycastHit wonder;
+        if (Physics.Raycast(charles, out wonder, colliderHalf + .1f, groundMask)) {
 
-                grounded = true;
-            }
+            grounded = true;
+        }
 
 
-            // MOUSE
-            // 3rd person
-            if (!bio.fipsi) {
+        // MOUSE
+        // 3rd person
+        if (!bio.fipsi) {
 
-                MTPV();
-            }
-            // 1st person
-            else {
-
-                MFPV();
-            }
+            MTPV();
+        }
+        // 1st person
+        else {
+       
+            MFPV();
+        }
     }
 	
 	void FixedUpdate() {

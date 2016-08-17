@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Yoohooho : NetworkManager {
 
@@ -8,6 +9,7 @@ public class Yoohooho : NetworkManager {
 
     void Start() {
 
+        // get possible start positions for players
         NetworkStartPosition[] allchilds = FindObjectsOfType<NetworkStartPosition>();
         roundround = new Vector3[allchilds.Length];
 
@@ -23,6 +25,7 @@ public class Yoohooho : NetworkManager {
 
     public override void OnClientConnect(NetworkConnection conn) {
 
+        // register all prefabs for every client on connect
         GameObject[] peeps = Resources.LoadAll<GameObject>("Peeps");
         for(int i = 0; i < peeps.Length; i++) {
 
@@ -32,23 +35,40 @@ public class Yoohooho : NetworkManager {
         base.OnClientConnect(conn);
     }
 
+    public override void OnClientDisconnect(NetworkConnection conn) {
+
+        base.OnClientDisconnect(conn);
+    }
+
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
 
-        var ididi = (GameObject)GameObject.Instantiate(robin());
+        // add player to server with a specific avatar
+        var ididi = (GameObject)GameObject.Instantiate(robin(conn.connectionId));
         NetworkServer.AddPlayerForConnection(conn, ididi, playerControllerId);
     }
 
-    private GameObject robin() {
+    /// <summary>
+    /// Find the right avatar.
+    /// </summary>
+    /// <returns> Avatar of "choice" </returns>
+    private GameObject robin(int idnummer) {
 
         GameObject prefalala;
+        int id = idnummer;
 
-        if (numPlayers == 0)        { prefalala = Resources.Load("Peeps/IGOR") as GameObject; }
-        else if (numPlayers == 1)   { prefalala = Resources.Load("Peeps/BRUNI") as GameObject; }
-        else if (numPlayers == 2)   { prefalala = Resources.Load("Peeps/SABELL") as GameObject; }
-        else if (numPlayers == 3)   { prefalala = Resources.Load("Peeps/JIGGLI") as GameObject; }
-        else                          prefalala = Resources.Load("Peeps/JIGGLI") as GameObject;
+        if (id == 0)      { prefalala = Resources.Load("Peeps/KAKA") as GameObject; }
+        else if (id == 1) { prefalala = Resources.Load("Peeps/IGOR") as GameObject; }
+        else if (id == 2) { prefalala = Resources.Load("Peeps/BRUNI") as GameObject; }
+        else if (id == 3) { prefalala = Resources.Load("Peeps/SABELL") as GameObject; }
+        else if (id == 4) { prefalala = Resources.Load("Peeps/JIGGLI") as GameObject; }
+        else if (id == 5) { prefalala = Resources.Load("Peeps/CLEMENTINE") as GameObject; }
+        else if (id == 6) { prefalala = Resources.Load("Peeps/RINGO") as GameObject; }
+        else if (id == 7) { prefalala = Resources.Load("Peeps/ZAUBERIN") as GameObject; }
+        else if (id == 8) { prefalala = Resources.Load("Peeps/FLUMILI") as GameObject; }
+        else if (id == 9) { prefalala = Resources.Load("Peeps/KOK") as GameObject; }
+        else prefalala = Resources.Load("Peeps/KAKA") as GameObject;
 
-        prefalala.transform.position = roundround[numPlayers];
+        prefalala.transform.position = roundround[id];
 
         return prefalala;
     }

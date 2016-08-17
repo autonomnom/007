@@ -7,12 +7,8 @@ using UnityEngine.Networking;
 public class ImKopf : MonoBehaviour {
 
     public Transform fooloow;
-    private Biografie bio;
     private GameObject calamera;
     private Vector3 localEu;
-
-    // the amount the camera is above the player while in first-person-view
-    private int off = 2;
 
 	void Start () {
 
@@ -34,8 +30,6 @@ public class ImKopf : MonoBehaviour {
         // getLocalEuler for looping protection
         localEu = calamera.transform.localEulerAngles;
 
-        findFollow();
-
         // look above and beneath
         mouseYview();
     }
@@ -46,10 +40,6 @@ public class ImKopf : MonoBehaviour {
     /// </summary>
     void findFollow() {
 
-        if(fooloow != null) {
-
-            bio = fooloow.GetComponent<Biografie>();
-        } 
     }
 
     /// <summary>

@@ -4,7 +4,7 @@ using System.Collections;
 public class Festsitzen : MonoBehaviour {
 
     public Transform folow;
-    private float off = 2f;
+    private float off = 1f;
     private float smooty = 8.5f;
 
 	void Start () {
