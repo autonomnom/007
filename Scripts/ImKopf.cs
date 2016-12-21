@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 
-// for the first person camera, fipsi
+// for the first person camera, fipsi 
+// Y - AXIS
 public class ImKopf : MonoBehaviour {
 
     public Transform fooloow;

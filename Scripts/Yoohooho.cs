@@ -9,7 +9,7 @@ public class Yoohooho : NetworkManager {
 
     void Start() {
 
-        // get possible start positions for players
+        // gather all possible start positions
         NetworkStartPosition[] allchilds = FindObjectsOfType<NetworkStartPosition>();
         roundround = new Vector3[allchilds.Length];
 
@@ -22,13 +22,16 @@ public class Yoohooho : NetworkManager {
     void Update() {
 
     }
+      
 
+    // registering the prefabs on the client
     public override void OnClientConnect(NetworkConnection conn) {
-
-        // register all prefabs for every client on connect
+        
+        // gathering an array with all prefabs from folder "peeps"
         GameObject[] peeps = Resources.LoadAll<GameObject>("Peeps");
         for(int i = 0; i < peeps.Length; i++) {
 
+            // registering
             ClientScene.RegisterPrefab(peeps[i]);
         }
 
@@ -40,6 +43,7 @@ public class Yoohooho : NetworkManager {
         base.OnClientDisconnect(conn);
     }
 
+    // changing the player prefab depending on it's connection id
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
 
         // add player to server with a specific avatar

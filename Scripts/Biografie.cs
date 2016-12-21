@@ -7,7 +7,7 @@ public class Biografie : NetworkBehaviour {
 
     [HideInInspector] public bool fipsi = true;
 
-    private NetworkManagerHUD huddi;
+    private YoogooohUD huddi;
     private float thirdDelay = 0;
 
     void Start () {
@@ -21,8 +21,12 @@ public class Biografie : NetworkBehaviour {
         Cursor.visible = false;
 
         // hide the network hud
-        huddi = FindObjectOfType<NetworkManagerHUD>();
+        huddi = FindObjectOfType<YoogooohUD>();
         huddi.showGUI = false;
+
+        // switch from third-person-camera (HUD) to first-person-camera         
+        /** to prevent having 2 audiolistener active at the same time */
+        FindObjectOfType<Festsitzen>().transform.GetChild(0).gameObject.SetActive(true); 
     }
 
     void FixedUpdate () {

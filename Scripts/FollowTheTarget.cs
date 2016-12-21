@@ -66,14 +66,33 @@ public class FollowTheTarget : MonoBehaviour {
 
         if (foollow == null) {
 
+            // the syntax is called bitshifting and adds layer 5 to the cullingMask of the camera
+            int layerMaskel = this.GetComponent<Camera>().cullingMask;
+            this.GetComponent<Camera>().cullingMask = layerMaskel | (1 << 5);
+
+            // to cancel fixedupdate, since there is no one to follow
             return;
+        }
+        else {
+
+            // removes the layer 5
+            int layerMaskel = this.GetComponent<Camera>().cullingMask;
+            this.GetComponent<Camera>().cullingMask = layerMaskel & ~(1 << 5);
         }
 
         findFollow();
 
         // changing between the cameras - maybe use tags instead of active
-        if (bio.fipsi) { vogelkamera.enabled = false; }
-        else { vogelkamera.enabled = true; }
+        if (bio.fipsi) {
+
+            vogelkamera.enabled = false;
+            vogelkamera.GetComponent<AudioListener>().enabled = false;
+        }
+        else {
+
+            vogelkamera.enabled = true;
+            vogelkamera.GetComponent<AudioListener>().enabled = true;
+        }
 
         // ckecking for state, zoom in or out
         zoomy();
@@ -94,7 +113,7 @@ public class FollowTheTarget : MonoBehaviour {
     /// </summary>
     void findFollow() {
 
-        if(foollow != null) {
+        if (foollow != null) {
 
             bio = foollow.GetComponentInParent<Biografie>();
         }
