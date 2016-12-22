@@ -34,7 +34,7 @@ public class FollowTheTarget : MonoBehaviour {
 
     private Vector3 targetPosition;
     private Vector3 _targetPosition;
-    private Transform foollow;
+    public Transform foollow;
     private Biografie bio;
     private Rigidbody body;
     private SphereCollider sphere;
@@ -60,14 +60,39 @@ public class FollowTheTarget : MonoBehaviour {
 
     void Update() {
 
-        findFollow();
     }
 
 	void FixedUpdate () {
 
+        if (foollow == null) {
+
+            // the syntax is called bitshifting and adds layer 5 to the cullingMask of the camera
+            int layerMaskel = this.GetComponent<Camera>().cullingMask;
+            this.GetComponent<Camera>().cullingMask = layerMaskel | (1 << 5);
+
+            // to cancel fixedupdate, since there is no one to follow
+            return;
+        }
+        else {
+
+            // removes the layer 5
+            int layerMaskel = this.GetComponent<Camera>().cullingMask;
+            this.GetComponent<Camera>().cullingMask = layerMaskel & ~(1 << 5);
+        }
+
+        findFollow();
+
         // changing between the cameras - maybe use tags instead of active
-        if (bio.fipsi) { vogelkamera.enabled = false; }
-        else { vogelkamera.enabled = true; }
+        if (bio.fipsi) {
+
+            vogelkamera.enabled = false;
+            vogelkamera.GetComponent<AudioListener>().enabled = false;
+        }
+        else {
+
+            vogelkamera.enabled = true;
+            vogelkamera.GetComponent<AudioListener>().enabled = true;
+        }
 
         // ckecking for state, zoom in or out
         zoomy();
@@ -88,8 +113,10 @@ public class FollowTheTarget : MonoBehaviour {
     /// </summary>
     void findFollow() {
 
-        foollow = GameObject.Find(G.identitaet.ToString()).GetComponentInChildren<Seele>().followMePlz;
-        bio = foollow.GetComponentInParent<Biografie>();
+        if (foollow != null) {
+
+            bio = foollow.GetComponentInParent<Biografie>();
+        }
     }
 
 
@@ -99,14 +126,14 @@ public class FollowTheTarget : MonoBehaviour {
     /// <returns>True if something is between.</returns>
     bool obstacleDetected() {
 
-        GameObject ida = GameObject.Find(G.identitaet.ToString());
-        float distance = Vector3.Distance(ida.transform.position, body.position);  // ~ 44f by default
+        Transform ida = foollow.parent;
+        float distance = Vector3.Distance(ida.position, body.position);  // ~ 44f by default
         RaycastHit bam;
 
         sphereResize(distance, 30, 12);
 
         // straight "camera <-> identity" check
-        Ray augenKontakt = new Ray(body.position, -(body.position - ida.transform.position));
+        Ray augenKontakt = new Ray(body.position, -(body.position - ida.position));
                     
                 //Debug.DrawLine(body.position, body.position + Vector3.Scale(augenKontakt.direction, new Vector3(distance, distance, distance)), Color.red);
 
@@ -116,7 +143,7 @@ public class FollowTheTarget : MonoBehaviour {
         }
 
         // cylinder check around the identity
-        Ray[] zyli = rray.tanzTanzRingeltanz(ida.transform, 8, 2f, .8f, .15f);
+        Ray[] zyli = rray.tanzTanzRingeltanz(ida, 8, 2f, .8f, .15f);
         for (int i = 0; i < zyli.Length; i++) {
 
                     //Debug.DrawLine(body.position, body.position + Vector3.Scale(zyli[i].direction, new Vector3(distance - .5f, distance - .5f, distance - .5f)), Color.green);
@@ -128,8 +155,8 @@ public class FollowTheTarget : MonoBehaviour {
         }
 
         // side & back check + backward check while zooming
-        Transform kampi = GameObject.Find(G.identitaet.ToString()).GetComponentInChildren<Fakamera>().transform;
-        Vector3 kampiRueckwaerts = (body.position - ida.transform.position).normalized;
+        Transform kampi = foollow.parent.GetComponentInChildren<Fakamera>().transform;
+        Vector3 kampiRueckwaerts = (body.position - ida.position).normalized;
         Vector3[] position = new Vector3[3];
             position[0] = kampi.position + Vector3.Scale(kampiRueckwaerts, new Vector3(rayWeiteAmPo, rayWeiteAmPo, rayWeiteAmPo));  // süd
             position[1] = kampi.position + Vector3.Scale(-kampi.right, new Vector3(rayWeiteAmPo, rayWeiteAmPo, rayWeiteAmPo));      // west

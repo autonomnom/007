@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Biografie))]
 
 // let the identities dance!
-public class Bewegungskraefte : MonoBehaviour {
+public class Bewegungskraefte : NetworkBehaviour {
 
     public float walkSpeed = 13f;
     public float turnSpeed = 1.95f;
@@ -34,63 +35,68 @@ public class Bewegungskraefte : MonoBehaviour {
 
     void Update() {
 
-        // bio aktiv allows only the selected avatar to be moved by input
-        if (bio.aktiv) {
+        if (!isLocalPlayer) {
 
-            // WASD
-            // forward + backwards + left + right
-            Vector3 dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-            Vector3 plusWalk = dir * walkSpeed;
-            moveAmount = Vector3.SmoothDamp(moveAmount, plusWalk, ref smoothMoveVelocity, .15f);
+            return;
+        }
 
-            // up
-            if (Input.GetButtonDown("Jump")) {
+        // WASD
+        // forward + backwards + left + right
+        Vector3 dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+        Vector3 plusWalk = dir * walkSpeed;
+        moveAmount = Vector3.SmoothDamp(moveAmount, plusWalk, ref smoothMoveVelocity, .15f);
 
-                if (grounded) {
-                    body.AddForce(body.transform.up * jumpForce, ForceMode.VelocityChange);
-                }
+        // up
+        if (Input.GetButtonDown("Jump")) {
+
+            if (grounded) {
+
+                body.AddForce(body.transform.up * jumpForce, ForceMode.VelocityChange);
             }
+        }
 
-            grounded = false;
-            Ray charles = new Ray(transform.position, -transform.up);
-            RaycastHit wonder;
-            if (Physics.Raycast(charles, out wonder, colliderHalf + .1f, groundMask)) {
+        grounded = false;
+        Ray charles = new Ray(transform.position, -transform.up);
+        RaycastHit wonder;
+        if (Physics.Raycast(charles, out wonder, colliderHalf + .1f, groundMask)) {
 
-                grounded = true;
-            }
+            grounded = true;
+        }
 
 
-            // MOUSE
-            // 3rd person
-            if (!bio.fipsi) {
+        // MOUSE
+        // 3rd person
+        if (!bio.fipsi) {
 
-                MTPV();
-            }
-            // 1st person
-            else {
-
-                MFPV();
-            }
+            MTPV();
+        }
+        // 1st person
+        else {
+       
+            MFPV();
         }
     }
 	
 	void FixedUpdate() {
 
-        if (bio.aktiv) {
+        if(!isLocalPlayer) {
 
-            //applying movement
-            body.MovePosition(body.position + GetComponent<Transform>().TransformDirection(moveAmount) * Time.fixedDeltaTime);
-            //applying mouse rotation
-            if (bio.fipsi) { 
-
-                //body.MoveRotation(rotationAmount * body.rotation);  // jitterless, dafür sind die kanten härter + er hängt an diesen etwas
-                body.MoveRotation(Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed * 10));
-            }
-            else {
-
-                body.MoveRotation(Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed));
-            }        
+            return;
         }
+
+        //applying movement
+        body.MovePosition(body.position + GetComponent<Transform>().TransformDirection(moveAmount) * Time.fixedDeltaTime);
+
+        //applying mouse rotation
+        if (bio.fipsi) { 
+
+            //body.MoveRotation(rotationAmount * body.rotation);  // jitterless, dafür sind die kanten härter + er hängt an diesen etwas
+            body.MoveRotation(Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed * 10));
+        }
+        else {
+
+            body.MoveRotation(Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed));
+        }        
 	}
 
     /// <summary>
@@ -108,6 +114,7 @@ public class Bewegungskraefte : MonoBehaviour {
     /// First person mouse view.
     /// Thanks to ben esponito's First Person Drifter Controller - @torahhorse
     /// </summary>
+    //  X - AXIS
     void MFPV () {
 
         float rotAverageX = 0f;

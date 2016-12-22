@@ -1,44 +1,35 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
-// for the first person camera, fipsi
+// for the first person camera, fipsi 
+// Y - AXIS
 public class ImKopf : MonoBehaviour {
 
-    private Transform fooloow;
-    private Biografie bio;
-    private GameObject camera;
+    public Transform fooloow;
+    private GameObject calamera;
     private Vector3 localEu;
-
-    // the amount the camera is above the player while in first-person-view
-    private int off = 2;
 
 	void Start () {
 
-        camera = this.gameObject;
+        calamera = this.gameObject;
         findFollow();
 	}
 	
 	void Update () {
 
-        // getLocalEuler for looping protection
-        localEu = camera.transform.localEulerAngles;
 	}
 
     void FixedUpdate() {
 
-        findFollow();
+        if (fooloow == null) {
 
-        if (bio.fipsi) { 
-            
-            camera.GetComponent<Camera>().enabled = true;
-            fooloow.GetComponent<MeshRenderer>().enabled = false;
+            return;
         }
-        else { 
             
-            camera.GetComponent<Camera>().enabled = true;
-            fooloow.GetComponent<MeshRenderer>().enabled = true;
-        }
+        // getLocalEuler for looping protection
+        localEu = calamera.transform.localEulerAngles;
 
         // look above and beneath
         mouseYview();
@@ -50,8 +41,6 @@ public class ImKopf : MonoBehaviour {
     /// </summary>
     void findFollow() {
 
-        fooloow = GameObject.Find(G.identitaet.ToString()).transform;
-        bio = fooloow.GetComponent<Biografie>();
     }
 
     /// <summary>
@@ -68,8 +57,6 @@ public class ImKopf : MonoBehaviour {
         float minimumY = -55f;
         float maximumY = 55f;
         bool invertY = true;
-
-        Quaternion rotationAmount;
 
         // optional inversion
         float invertFlag = 1f;
@@ -97,14 +84,7 @@ public class ImKopf : MonoBehaviour {
         rotAverageY = fixedAngelSpectrum(rotAverageY);
 
         //apply it
-        camera.transform.Rotate(new Vector3(rotAverageY, 0, 0));
-        
-        /* deprecated. 
-        // save the desired amount for quaternion rotation
-        rotationAmount = Quaternion.AngleAxis(rotAverageY, camera.transform.right);
-        // apply it
-        camera.transform.rotation = Quaternion.Slerp(camera.transform.rotation, rotationAmount * camera.transform.rotation, Time.fixedDeltaTime * 5); //rotationAmount * camera.transform.rotation   
-        */
+        calamera.transform.Rotate(new Vector3(rotAverageY, 0, 0));
     }
 
 
