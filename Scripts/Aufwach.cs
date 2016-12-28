@@ -12,8 +12,9 @@ public class Aufwach : MonoBehaviour {
     public Color ausen = new Color(0.9411765f, 0.7529412f, 0.7529412f, 1f);
     private Color bday = new Color(0.02352941f, 0.03529412f, 0.5294118f, 1f);
 
-    private bool nighttime = false;
-    private bool intransit = false;
+    // if nighttime is true, we are in the body
+    [HideInInspector] public bool nighttime = false;
+    [HideInInspector] public bool intransit = false;
 
     void Awake() {
 
@@ -28,17 +29,7 @@ public class Aufwach : MonoBehaviour {
 	
 
 	void Update () {
-	    
-        // for testing, got to be replaced with triggers
-        if(Input.GetKeyDown(KeyCode.L)) {
-
-            // turnaround in case we already transitioning
-            if (intransit) { nighttime = !nighttime; }
-
-            // start the transition
-            intransit = true;
-        }
-        
+	         
         if (intransit) {
 
             RenderSettings.ambientLight = TheNewerCycleOfLifeAndDeath(nighttime);
@@ -73,7 +64,7 @@ public class Aufwach : MonoBehaviour {
             }
 
             // or on the way
-            return Color.Lerp(jetzt, ausen, Time.fixedDeltaTime);
+            return Color.Lerp(jetzt, ausen, Time.fixedDeltaTime * .5f);
         }
         // otherwise we want a darker ambientLight
         else {
@@ -87,7 +78,7 @@ public class Aufwach : MonoBehaviour {
             }
 
             // or on the way
-            return Color.Lerp(jetzt, innen, Time.fixedDeltaTime);
+            return Color.Lerp(jetzt, innen, Time.fixedDeltaTime * .5f);
         }
     }
 }

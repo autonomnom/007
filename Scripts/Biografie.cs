@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using UnityEngine.VR;
 
 // to be attached to an root identity object
 public class Biografie : NetworkBehaviour {
 
     [HideInInspector] public bool fipsi = true;
+    [HideInInspector] public bool weare = true;
 
     private YoogooohUD huddi;
     private float thirdDelay = 0;
@@ -68,5 +70,9 @@ public class Biografie : NetworkBehaviour {
             Cursor.visible = !Cursor.visible;
             huddi.showGUI = Cursor.visible;
         }
+
+        // check for VR
+        if (VRDevice.isPresent) { weare = true; }
+        else { weare = false; }
 	}
 }

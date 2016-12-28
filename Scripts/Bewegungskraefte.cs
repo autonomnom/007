@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Networking;
+using UnityEngine.VR;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Biografie))]
@@ -21,6 +22,10 @@ public class Bewegungskraefte : NetworkBehaviour {
     // for goundcheck, needed in Xray.cs
     [HideInInspector] public bool grounded;
     public LayerMask groundMask;
+
+    // oculus as rotation controller
+    [HideInInspector] public float angliene;
+    public float schmus = 10f;
 
     Rigidbody body;
     Biografie bio;
@@ -62,21 +67,14 @@ public class Bewegungskraefte : NetworkBehaviour {
 
             grounded = true;
         }
-
-
-        // MOUSE
-        // 3rd person
-        if (!bio.fipsi) {
-
-            MTPV();
-        }
-        // 1st person
-        else {
-       
-            MFPV();
-        }
+        
+        // 3rd Person View
+        if (!bio.fipsi) {   rotationAmount = MTPV(); }
+        // 1st Person View / Oculus
+        else {              rotationAmount = !bio.weare ? MFPV() : OFPV(); }
     }
 	
+
 	void FixedUpdate() {
 
         if(!isLocalPlayer) {
@@ -87,35 +85,44 @@ public class Bewegungskraefte : NetworkBehaviour {
         //applying movement
         body.MovePosition(body.position + GetComponent<Transform>().TransformDirection(moveAmount) * Time.fixedDeltaTime);
 
+
         //applying mouse rotation
-        if (bio.fipsi) { 
+        if (bio.fipsi) {
 
-            //body.MoveRotation(rotationAmount * body.rotation);  // jitterless, dafür sind die kanten härter + er hängt an diesen etwas
-            body.MoveRotation(Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed * 10));
+            if (!bio.weare) {
+                //body.MoveRotation(rotationAmount * body.rotation);                                                                                // jitterless, dafür sind die kanten härter + er hängt an diesen etwas
+                body.MoveRotation( Quaternion.Slerp( body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed * 10 ));        // THE ORIGINAL MOUSELOOK
+            }
+            else {
+                //body.transform.rotation =  rotationAmount * body.transform.rotation;    
+                body.MoveRotation(Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed * 10));
+               // FindObjectOfType<Festsitzen>().transform.rotation = Quaternion.AngleAxis( -angliene / schmus, body.transform.up) * body.transform.rotation;
+            } 
         }
-        else {
-
-            body.MoveRotation(Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed));
+        else { 
+            body.MoveRotation( Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed));
         }        
 	}
+
 
     /// <summary>
     /// Have slight mouse rotation on the UP-axis for 3d person view.
     /// </summary>
-    void MTPV() {
+    Quaternion MTPV() {
 
         Vector3 horizontalInput = new Vector3(Input.GetAxis("Mouse X"), 0, 0).normalized;
         float desiredAngle = 49f;
         desiredAngle *= horizontalInput.x;
-        rotationAmount = Quaternion.AngleAxis(desiredAngle, body.transform.up);
+        return Quaternion.AngleAxis(desiredAngle, body.transform.up);
     }
+
 
     /// <summary>
     /// First person mouse view.
     /// Thanks to ben esponito's First Person Drifter Controller - @torahhorse
     /// </summary>
     //  X - AXIS
-    void MFPV () {
+    Quaternion MFPV () {
 
         float rotAverageX = 0f;
         List<float> rotArrayX = new List<float>();
@@ -123,7 +130,7 @@ public class Bewegungskraefte : NetworkBehaviour {
         float rotationX = 0f;
         float framesOfSmoothing = 25f;
         float minimumX = -360F;
-	    float maximumX = 360F;
+        float maximumX = 360F;
 
         // collect the mouse data
         rotationX += Input.GetAxis("Mouse X") * sensitivityX;
@@ -141,8 +148,9 @@ public class Bewegungskraefte : NetworkBehaviour {
         rotAverageX = ClampAngle(rotAverageX, minimumX, maximumX);
 
         // save the desired amount
-        rotationAmount = Quaternion.AngleAxis(rotAverageX, body.transform.up);
+        return Quaternion.AngleAxis(rotAverageX, body.transform.up);
     }
+
 
     /// <summary>
     /// Set a fixed angle of moving with the mouse.
@@ -158,5 +166,31 @@ public class Bewegungskraefte : NetworkBehaviour {
             }
         }
         return Mathf.Clamp(angle, min, max);
+    }
+
+    /// <summary>
+    /// Oculus First Person Controller
+    /// </summary>
+    /// <returns></returns>
+    Quaternion OFPV() {
+
+        // get the camera
+        Transform fipsi = GameObject.Find("Fipsi").transform;
+
+        // recalculating the forward vector of the camera to make it orthogonal to the body.transform.up vector
+        Vector3 fipsoff = fipsi.forward - (Vector3.Dot(fipsi.forward, body.transform.up) * body.transform.up);
+
+        // checking for the angle between orthoganlised fipsi.forward and body.forward - should be 0 on mouse and changing while on oculus
+        angliene =  Vector3.Distance(fipsi.forward, body.transform.right) <= Vector3.Distance(fipsi.forward, -body.transform.right)
+                    ? Mathf.Round(Vector3.Angle(body.transform.forward, fipsoff))
+                    : Mathf.Round(-Vector3.Angle(body.transform.forward, fipsoff));
+
+        // without oculus the second should increase while moving vertically, in the mid getting closer to 0
+        // with oculus both values should be the same on the horizontal axis but differ vertically
+        // Debug.Log(angliene + "    " + Vector3.Angle(body.transform.forward, fipsi.forward));
+
+        // Quaternion.AngleAxis( -angliene / schmus, body.transform.up)
+        // has to be added to the rotation of Parasit 
+        return Quaternion.AngleAxis(angliene / schmus, body.transform.up);
     }
 }
