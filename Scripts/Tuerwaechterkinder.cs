@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 public class Tuerwaechterkinder : MonoBehaviour {
@@ -23,6 +24,11 @@ public class Tuerwaechterkinder : MonoBehaviour {
 
     void OnTriggerEnter (Collider other) {
 
+//        if(!isLocalPlayer) {
+
+  //          return;
+   //     }
+
         // only check for avatars
         if (other.tag != "Igor") { return; }
 
@@ -43,11 +49,21 @@ public class Tuerwaechterkinder : MonoBehaviour {
 
     void OnTriggerStay (Collider other) {
 
+   //     if (!isLocalPlayer) {
+
+    //        return;
+     //   }
+
         // only check for avatars
         if (other.tag != "Igor") { return; }
     }
 
     void OnTriggerExit (Collider other) {
+
+     //   if (!isLocalPlayer) {
+
+    //        return;
+    //    }
 
         // only check for avatars
         if (other.tag != "Igor") { return; }

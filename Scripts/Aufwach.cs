@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 public class Aufwach : MonoBehaviour {
@@ -29,6 +30,11 @@ public class Aufwach : MonoBehaviour {
 	
 
 	void Update () {
+
+      //  if(!isLocalPlayer) {        // disables it completly - NEEDS FIX    // dafür funktioniert jetzt wieder der vertical mouse look WTF
+
+      //      return;
+        //}
 	         
         if (intransit) {
 

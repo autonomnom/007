@@ -17,7 +17,7 @@ public class Bewegungskraefte : NetworkBehaviour {
 
     Vector3 moveAmount;
     Vector3 smoothMoveVelocity;
-    Quaternion rotationAmount;
+    public Quaternion rotationAmount;
 
     // for goundcheck, needed in Xray.cs
     [HideInInspector] public bool grounded;
@@ -25,7 +25,12 @@ public class Bewegungskraefte : NetworkBehaviour {
 
     // oculus as rotation controller
     [HideInInspector] public float angliene;
+    [HideInInspector] public float anglieForX;
     public float schmus = 10f;
+    private bool left;
+    private List<float> schmusingList = new List<float>();
+    private int maxSchmusing = 15;
+    private float lastAngliene = 0;
 
     Rigidbody body;
     Biografie bio;
@@ -36,6 +41,10 @@ public class Bewegungskraefte : NetworkBehaviour {
         bio = GetComponent<Biografie>();
 
         rotationAmount = new Quaternion(0, 0, 0, 1);
+
+        for (int i = 0; i < schmusingList.Count; i++) {
+            schmusingList.Add(0);
+        }
 	}
 
     void Update() {
@@ -91,16 +100,15 @@ public class Bewegungskraefte : NetworkBehaviour {
 
             if (!bio.weare) {
                 //body.MoveRotation(rotationAmount * body.rotation);                                                                                // jitterless, dafür sind die kanten härter + er hängt an diesen etwas
-                body.MoveRotation( Quaternion.Slerp( body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed * 10 ));        // THE ORIGINAL MOUSELOOK
+                body.MoveRotation(Quaternion.Slerp( body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed * 10 ));        //  THE ORIGINAL MOUSELOOK
             }
             else {
-                //body.transform.rotation =  rotationAmount * body.transform.rotation;    
-                body.MoveRotation(Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed * 10));
-               // FindObjectOfType<Festsitzen>().transform.rotation = Quaternion.AngleAxis( -angliene / schmus, body.transform.up) * body.transform.rotation;
+                //body.transform.rotation =  rotationAmount * body.transform.rotation; 
+                body.MoveRotation(Quaternion.Slerp( body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed * 5 ));
             } 
         }
         else { 
-            body.MoveRotation( Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed));
+            body.MoveRotation(Quaternion.Slerp(body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed));
         }        
 	}
 
@@ -125,7 +133,7 @@ public class Bewegungskraefte : NetworkBehaviour {
     Quaternion MFPV () {
 
         float rotAverageX = 0f;
-        List<float> rotArrayX = new List<float>();
+        List<float> rotArrayX = new List<float>();              // ?? Doesnt it has to be in the top so it doesnt create a new list every frame ??
         float sensitivityX = 7f;
         float rotationX = 0f;
         float framesOfSmoothing = 25f;
@@ -182,15 +190,58 @@ public class Bewegungskraefte : NetworkBehaviour {
 
         // checking for the angle between orthoganlised fipsi.forward and body.forward - should be 0 on mouse and changing while on oculus
         angliene =  Vector3.Distance(fipsi.forward, body.transform.right) <= Vector3.Distance(fipsi.forward, -body.transform.right)
-                    ? Mathf.Round(Vector3.Angle(body.transform.forward, fipsoff))
-                    : Mathf.Round(-Vector3.Angle(body.transform.forward, fipsoff));
+                    ? Vector3.Angle(body.transform.forward, fipsoff)    //Mathf.Round(Vector3.Angle(body.transform.forward, fipsoff))
+                    : -Vector3.Angle(body.transform.forward, fipsoff);  //Mathf.Round(-Vector3.Angle(body.transform.forward, fipsoff));
 
-        // without oculus the second should increase while moving vertically, in the mid getting closer to 0
-        // with oculus both values should be the same on the horizontal axis but differ vertically
-        // Debug.Log(angliene + "    " + Vector3.Angle(body.transform.forward, fipsi.forward));
+        // wiz spinning /remove applyfriction
+        // ------------------------- // anglieForX = angliene;
+        // ------------------------- // schmus = 10f;
+        // ------------------------- // Quaternion.AngleAxis(anglieForX / schmus, body.transform.up);
+        // ------------------------- // has to be added to the rotation of Parasit +
 
-        // Quaternion.AngleAxis( -angliene / schmus, body.transform.up)
-        // has to be added to the rotation of Parasit 
-        return Quaternion.AngleAxis(angliene / schmus, body.transform.up);
+        // applyFriction();
+        // Quaternion.AngleAxis(anglieForX  * schmus, body.transform.up);
+        // does move the body according to the oculus 
+        // but overmoves the fipsi
+
+        Debug.Log("bewegung" + angliene);
+
+        return Quaternion.AngleAxis(angliene, body.transform.up);
+    }
+
+
+    void applyFriction() {
+
+        float averageDifference = 0;
+        float anglieneDifference = 0;
+
+        // get velocity
+        if (lastAngliene != angliene) {
+            anglieneDifference = angliene - lastAngliene;
+        }
+        else anglieneDifference = 0;
+
+        lastAngliene = angliene;
+
+        // adding difference to the list
+        schmusingList.Add(anglieneDifference);
+
+        // checking if list is full, remove first entry
+        if (schmusingList.Count >= maxSchmusing) {
+            schmusingList.RemoveAt(0);
+        }
+
+        // get average value of schmusingList
+        for (int i = 0; i < schmusingList.Count; i++) {
+            averageDifference += schmusingList[i];
+        }
+        averageDifference /= schmusingList.Count;
+
+        // and round it to 2 decimal places
+        averageDifference = Mathf.Round(averageDifference * 100f) / 100f;
+
+        // --------------
+
+        anglieForX = averageDifference;
     }
 }
