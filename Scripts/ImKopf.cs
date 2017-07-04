@@ -31,7 +31,10 @@ public class ImKopf : MonoBehaviour {
         localEu = calamera.transform.localEulerAngles;
 
         // look above and beneath
-        mouseYview();
+        if (!FindObjectOfType<Biografie>().weare) {
+
+            mouseYview();
+        }
     }
 
     /// <summary>

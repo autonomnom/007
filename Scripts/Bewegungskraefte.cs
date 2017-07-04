@@ -209,7 +209,7 @@ public class Bewegungskraefte : NetworkBehaviour {
         return Quaternion.AngleAxis(angliene, body.transform.up);
     }
 
-
+    // deprecated
     void applyFriction() {
 
         float averageDifference = 0;

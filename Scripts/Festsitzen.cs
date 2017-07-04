@@ -8,12 +8,21 @@ public class Festsitzen : MonoBehaviour {
     private float off = 1f;
     public float smooty = 8.5f;
 
-	void Start () {
+    void Start() {
 
-	}
-	
-	void FixedUpdate () {
-	
+        if (folow == null) {
+
+            return;
+        }
+
+        if (FindObjectOfType<Biografie>().weare) {
+
+            this.gameObject.transform.rotation = folow.rotation;
+        }
+    }
+
+    void FixedUpdate() {
+
         if (folow == null) {
 
             return;
@@ -24,30 +33,25 @@ public class Festsitzen : MonoBehaviour {
 
         // get his rotation
         if (!FindObjectOfType<Biografie>().weare) {
+
             this.gameObject.transform.rotation = Quaternion.Slerp(this.gameObject.transform.rotation, folow.transform.rotation, Time.fixedDeltaTime * smooty);
-        } 
+        }
         else {
+
             Bewegungskraefte meow = folow.GetComponent<Bewegungskraefte>();
+            DownLogic down = folow.GetComponent<DownLogic>();
 
             // for more crisp horizontal movement remove the slerp but then the gravity is more hard as well
 
-                            // -- wiz spinning
-                            // this.gameObject.transform.rotation = Quaternion.Slerp(this.gameObject.transform.rotation, Quaternion.AngleAxis( -meow.angliene / meow.schmus, folow.up) * folow.rotation, Time.fixedDeltaTime * smooty);
+            //  --  // this line was used for the sensor focused / spinning version // DEPRECATED?
+            //  --  // this.gameObject.transform.rotation = Quaternion.Slerp(this.gameObject.transform.rotation, Quaternion.AngleAxis( -meow.angliene / meow.schmus, folow.up) * folow.rotation, Time.fixedDeltaTime * smooty);
 
-                            // -- this works for the player and parasit, but fipsi is over-turning
-                            // this.gameObject.transform.rotation = Quaternion.AngleAxis(-meow.anglieForX * meow.schmus, folow.up) * folow.rotation;
+            // first copy the downlogic (check Downlogic class for more insights)
+            this.gameObject.transform.rotation = Quaternion.Slerp(this.gameObject.transform.rotation, Quaternion.FromToRotation(transform.up, down.chooseGooseNorm) * this.gameObject.transform.rotation, Time.fixedDeltaTime * 1.95f * 5); 
 
-            Debug.Log("festsitzen" + meow.angliene);
-
-            // - need to find a way to rotate this gameobjects forward rotation 
-            // - into the negative of the folow's to make this' child, the fipsi, 
-            // - be on point with the forward rotation of folow. T____________T
-            // - RN all 3 are on point but that way fipsi is accelerating:
-
-               this.gameObject.transform.rotation = Quaternion.AngleAxis( -meow.angliene, -folow.up) * folow.rotation;
-
-            //this.gameObject.transform.rotation = folow.rotation;
-            //this.gameObject.transform.rotation = Quaternion.AngleAxis( meow.angliene + 180, folow.up) * this.gameObject.transform.rotation;
+            // SOMEHOW its working without the following line Ô_Ô"
+            // then get the rotation logic of the VR Glasses
+            // this.gameObject.transform.rotation = Quaternion.AngleAxis(-meow.angliene, folow.up) * this.gameObject.transform.rotation;
         }
     }
 }
