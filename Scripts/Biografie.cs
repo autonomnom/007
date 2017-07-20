@@ -12,6 +12,14 @@ public class Biografie : NetworkBehaviour {
     private YoogooohUD huddi;
     private float thirdDelay = 0;
 
+    void Awake() {
+
+        if (!isLocalPlayer) {
+
+            return;
+        }
+    }
+
     void Start () {
 
         if (!isLocalPlayer) {
@@ -28,7 +36,25 @@ public class Biografie : NetworkBehaviour {
 
         // switch from third-person-camera (HUD) to first-person-camera         
         /** to prevent having 2 audiolistener active at the same time */
-        FindObjectOfType<Festsitzen>().transform.GetChild(0).gameObject.SetActive(true); 
+        FindObjectOfType<Festsitzen>().transform.GetChild(0).gameObject.SetActive(true);
+    }
+
+    public override void OnStartLocalPlayer() {
+
+        base.OnStartLocalPlayer();
+        /*
+        // start the tuerwaechterin & tuerwaechterkinder scripte
+        Tuerwaechterkinder[] knut = FindObjectsOfType<Tuerwaechterkinder>();
+        for (var i = 0; i < knut.Length; i++) {
+
+            knut[i].enabled = true;
+        }
+
+        Tuerwaechterin knutmama = FindObjectOfType<Tuerwaechterin>();
+        knutmama.enabled = true;
+
+        Aufwach lore = FindObjectOfType<Aufwach>();
+        lore.enabled = true;*/
     }
 
     void FixedUpdate () {

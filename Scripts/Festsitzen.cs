@@ -46,10 +46,12 @@ public class Festsitzen : MonoBehaviour {
             //  --  // this line was used for the sensor focused / spinning version // DEPRECATED?
             //  --  // this.gameObject.transform.rotation = Quaternion.Slerp(this.gameObject.transform.rotation, Quaternion.AngleAxis( -meow.angliene / meow.schmus, folow.up) * folow.rotation, Time.fixedDeltaTime * smooty);
 
+
             // first copy the downlogic (check Downlogic class for more insights)
             this.gameObject.transform.rotation = Quaternion.Slerp(this.gameObject.transform.rotation, Quaternion.FromToRotation(transform.up, down.chooseGooseNorm) * this.gameObject.transform.rotation, Time.fixedDeltaTime * 1.95f * 5); 
 
             // SOMEHOW its working without the following line Ô_Ô"
+
             // then get the rotation logic of the VR Glasses
             // this.gameObject.transform.rotation = Quaternion.AngleAxis(-meow.angliene, folow.up) * this.gameObject.transform.rotation;
         }

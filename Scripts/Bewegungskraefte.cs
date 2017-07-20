@@ -204,8 +204,6 @@ public class Bewegungskraefte : NetworkBehaviour {
         // does move the body according to the oculus 
         // but overmoves the fipsi
 
-        Debug.Log("bewegung" + angliene);
-
         return Quaternion.AngleAxis(angliene, body.transform.up);
     }
 

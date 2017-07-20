@@ -2,7 +2,7 @@
 using UnityEngine.Networking;
 using System.Collections;
 
-public class Tuerwaechterkinder : MonoBehaviour {
+public class Tuerwaechterkinder : NetworkBehaviour {
 
     // has to be innen or außen
     [SerializeField] private Tuerwaechterin.tuerposi choreo;
@@ -24,13 +24,10 @@ public class Tuerwaechterkinder : MonoBehaviour {
 
     void OnTriggerEnter (Collider other) {
 
-//        if(!isLocalPlayer) {
-
-  //          return;
-   //     }
-
         // only check for avatars
-        if (other.tag != "Igor") { return; }
+        // have to find something like if NetworkClientId = other.Id
+        if (other.tag != "Igor" || !other.GetComponent<NetworkIdentity>().isLocalPlayer) { return; }
+        Debug.Log(other.GetComponent<NetworkIdentity>().isLocalPlayer + "  " + other.GetComponent<NetworkIdentity>().playerControllerId);
 
         if (choreo == Tuerwaechterin.tuerposi.außen) { mama.hello = true; }
         if (choreo == Tuerwaechterin.tuerposi.innen) { mama.baba = true; }
@@ -49,24 +46,14 @@ public class Tuerwaechterkinder : MonoBehaviour {
 
     void OnTriggerStay (Collider other) {
 
-   //     if (!isLocalPlayer) {
-
-    //        return;
-     //   }
-
         // only check for avatars
-        if (other.tag != "Igor") { return; }
+        if (other.tag != "Igor" || !other.GetComponent<NetworkIdentity>().isLocalPlayer) { return; }
     }
 
     void OnTriggerExit (Collider other) {
 
-     //   if (!isLocalPlayer) {
-
-    //        return;
-    //    }
-
         // only check for avatars
-        if (other.tag != "Igor") { return; }
+        if (other.tag != "Igor" || !other.GetComponent<NetworkIdentity>().isLocalPlayer) { return; }
 
         if (choreo == Tuerwaechterin.tuerposi.außen) { mama.hello = false; }
         if (choreo == Tuerwaechterin.tuerposi.innen) { mama.baba = false; }

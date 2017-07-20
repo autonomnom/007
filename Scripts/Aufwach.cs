@@ -14,8 +14,8 @@ public class Aufwach : MonoBehaviour {
     private Color bday = new Color(0.02352941f, 0.03529412f, 0.5294118f, 1f);
 
     // if nighttime is true, we are in the body
-    [HideInInspector] public bool nighttime = false;
-    [HideInInspector] public bool intransit = false;
+    /*[HideInInspector]*/ public bool nighttime = false;
+    /*[HideInInspector]*/ public bool intransit = false;
 
     void Awake() {
 
@@ -27,14 +27,8 @@ public class Aufwach : MonoBehaviour {
     void Start () {
 	
 	}
-	
 
-	void Update () {
-
-      //  if(!isLocalPlayer) {        // disables it completly - NEEDS FIX    // dafür funktioniert jetzt wieder der vertical mouse look WTF
-
-      //      return;
-        //}
+    void Update () {
 	         
         if (intransit) {
 
