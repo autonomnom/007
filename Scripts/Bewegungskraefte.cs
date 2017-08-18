@@ -10,7 +10,7 @@ using UnityEngine.VR;
 // let the identities dance!
 public class Bewegungskraefte : NetworkBehaviour {
 
-    public float walkSpeed = 13f;
+    public float walkSpeed = 11f;
     public float turnSpeed = 1.95f;
     public float jumpForce = 25f;
     public float colliderHalf = 1;
@@ -99,8 +99,8 @@ public class Bewegungskraefte : NetworkBehaviour {
         if (bio.fipsi) {
 
             if (!bio.weare) {
-                //body.MoveRotation(rotationAmount * body.rotation);                                                                                // jitterless, dafür sind die kanten härter + er hängt an diesen etwas
-                body.MoveRotation(Quaternion.Slerp( body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed * 10 ));        //  THE ORIGINAL MOUSELOOK
+                //body.MoveRotation(rotationAmount * body.rotation);                                                                                                 // jitterless, dafür sind die kanten härter + er hängt an diesen etwas
+                body.MoveRotation(Quaternion.Slerp( body.rotation, rotationAmount * body.rotation, Time.fixedDeltaTime * turnSpeed * bio.mouzesenzitivity ));        //  THE ORIGINAL MOUSELOOK
             }
             else {
                 //body.transform.rotation =  rotationAmount * body.transform.rotation; 
