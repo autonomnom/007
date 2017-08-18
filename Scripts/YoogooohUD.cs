@@ -37,12 +37,16 @@ namespace UnityEngine.Networking {
         public Texture mmstaging;
         public Texture disablematchmaker;
 
+        private Biografie localBiomarket;
+
         void Awake() {
 
             yoghurt = GetComponent<Yoohooho>();
         }
 
         void Update() {
+
+            localBiomarket = FindObjectOfType<Biografie>();
 
             if (!showGUI)
                 return;
@@ -60,11 +64,15 @@ namespace UnityEngine.Networking {
                 if (Input.GetKeyDown(KeyCode.C)) {
                     yoghurt.StartClient();
                 }
+                if (Input.GetKeyDown(KeyCode.Escape)) {
+                    Application.Quit();
+                }
             }
             if (NetworkServer.active && yoghurt.IsClientConnected()) {
 
                 if (Input.GetKeyDown(KeyCode.X)) {
                     yoghurt.StopHost();
+                    localBiomarket.mouzesenzitivity = 10;
                 }
             }
         }
@@ -85,7 +93,7 @@ namespace UnityEngine.Networking {
 
                 if (noConnection) {
                     if (UnityEngine.Application.platform != RuntimePlatform.WebGLPlayer) {
-                        if (GUI.Button(new Rect(xpos, ypos, 200, 20), "LAN Host(H)")) {
+                        if (GUI.Button(new Rect(xpos, ypos, 200, 20), "LAN Host(H)")) { 
                             yoghurt.StartHost();
                         }
                         ypos += spacing;
@@ -109,6 +117,10 @@ namespace UnityEngine.Networking {
                         }
                         ypos += spacing;
                     }
+
+                    if (GUI.Button(new Rect(Screen.width - 60, 20, 30, 30), "X")) {
+                        Application.Quit();
+                    }
                 }
                 else {
 
@@ -118,6 +130,7 @@ namespace UnityEngine.Networking {
 
                     if (GUI.Button(new Rect(xpos, ypos, 200, 20), "Cancel Connection Attempt")) {
                         yoghurt.StopClient();
+                        localBiomarket.mouzesenzitivity = 10;
                     }
                 }
             }
@@ -153,6 +166,7 @@ namespace UnityEngine.Networking {
 
                 if (GUI.Button(new Rect(xpos, ypos, 200, 20), "Stop (X)")) {
                     yoghurt.StopHost();
+                    localBiomarket.mouzesenzitivity = 10;
                 }
                 ypos += spacing;
             }

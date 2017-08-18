@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 public class Tuerwaechterin : MonoBehaviour {
@@ -10,7 +11,8 @@ public class Tuerwaechterin : MonoBehaviour {
         wasanderes,
     }
 
-    private Aufwach schnarzz;
+    public GameObject schnwarzzPAPA;
+    public Aufwach schnarzz;
     [HideInInspector] public bool hello = false;
     [HideInInspector] public bool baba = false;
 
@@ -18,16 +20,23 @@ public class Tuerwaechterin : MonoBehaviour {
 
     void Awake() {
 
-        schnarzz = FindObjectOfType<Aufwach>();
         knolle = tuerposi.wasanderes;
     }
 
 	void Start () {
-	
-	}
-	
-	void Update () {
-	
+
+        if (schnwarzzPAPA == null) {
+
+            Debug.LogError("No light-system connected.");
+        }
+        else {
+
+            schnarzz = schnwarzzPAPA.GetComponent<Aufwach>();
+        }
+    }
+
+    void Update () {
+
 	}
 
     public void licht (bool night) {

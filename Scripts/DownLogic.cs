@@ -8,7 +8,8 @@ using UnityEngine.Networking;
 // gravity 
 public class DownLogic : NetworkBehaviour {
 
-    private Vector3 chooseGooseNorm;
+    public Vector3 chooseGooseNorm;
+    [HideInInspector] public Quaternion downRot;
 
     public float gravity = -250f;
     Rigidbody body;
@@ -70,7 +71,8 @@ public class DownLogic : NetworkBehaviour {
         }
 
         // applying rotation based on the triangles normal below
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.FromToRotation(transform.up, chooseGooseNorm) * transform.rotation, .5f);
+        downRot = Quaternion.FromToRotation(transform.up, chooseGooseNorm);     // downRot is for the Parasit rotation only # VR
+        transform.rotation = Quaternion.Slerp(transform.rotation, downRot * transform.rotation, .5f);
         body.AddForce(chooseGooseNorm * gravity);
     }
 }

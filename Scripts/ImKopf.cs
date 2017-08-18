@@ -7,14 +7,13 @@ using UnityEngine.Networking;
 // Y - AXIS
 public class ImKopf : MonoBehaviour {
 
-    public Transform fooloow;
+    public Transform fooloow;           // getting set by Biografie (on the peeps prefab)
     private GameObject calamera;
     private Vector3 localEu;
 
 	void Start () {
 
         calamera = this.gameObject;
-        findFollow();
 	}
 	
 	void Update () {
@@ -32,15 +31,10 @@ public class ImKopf : MonoBehaviour {
         localEu = calamera.transform.localEulerAngles;
 
         // look above and beneath
-        mouseYview();
-    }
+        if (!FindObjectOfType<Biografie>().weare) {
 
-
-    /// <summary>
-    /// Find the identity to follow.
-    /// </summary>
-    void findFollow() {
-
+            mouseYview();
+        }
     }
 
     /// <summary>
